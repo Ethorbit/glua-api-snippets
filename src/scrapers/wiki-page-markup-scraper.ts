@@ -13,6 +13,7 @@ export type CommonWikiProperties = {
   description: string;
   realm: Realm;
   url: string;
+  example?: string;
   deprecated?: string;
 }
 
@@ -244,6 +245,16 @@ export class WikiPageMarkupScraper extends Scraper<WikiPage> {
         const isDeprecated = $('deprecated').length > 0;
         const address = response.url.split('/').pop()!.split('?')[0];
 
+        let example: string | undefined = undefined;
+        example = $('example').map(function() {
+            const $el = $(this);
+            return $el.text().trim();
+        }).get().join(' - ');
+
+        if (example != undefined && example.length <= 0) {
+          example = undefined
+        }
+
         let deprecated: string | undefined = undefined;
         if (isDeprecated && !isEnum && !isStruct) {
           deprecated = $('deprecated').map(function() {
@@ -266,7 +277,7 @@ export class WikiPageMarkupScraper extends Scraper<WikiPage> {
               key: $el.attr('key')!,
               value: $el.attr('value')!,
               description: markdownifyDescription($, $el),
-              deprecated: deprecated || undefined,
+              deprecated: deprecated || undefined
             };
           }).get();
 
@@ -307,7 +318,8 @@ export class WikiPageMarkupScraper extends Scraper<WikiPage> {
             description: markdownifyDescription($, $('structure description')),
             realm: $('realm').text() as Realm,
             fields,
-            deprecated
+            deprecated,
+            description: markdownifyDescription($, $('description'))
           };
         } else if (isPanel) {
           return <Panel>{
@@ -373,7 +385,8 @@ export class WikiPageMarkupScraper extends Scraper<WikiPage> {
             realm: $('realm:first').text() as Realm,
             arguments: argumentList,
             returns,
-            deprecated
+            deprecated,
+            example
           };
 
           if (isClassFunction) {

@@ -1,0 +1,8 @@
+services:
+  glua-api-snippets:
+    build:
+      context: .
+    volumes:
+      - ./output:/home/node/output
+    command: >
+      npx tsx ./src/cli-scraper.ts --output ./output

@@ -109,7 +109,7 @@ async function startScrape() {
       }
 
       fileName = fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    
+
       // Make sure modules like Entity and ENTITY are placed in the same file.
       moduleName = moduleName.toLowerCase();
 
